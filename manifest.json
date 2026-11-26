@@ -1,1 +1,40 @@
-{"name": "Spoken Mandarin for Real Life", "short_name": "Mandarin", "start_url": "/", "scope": "/", "display": "standalone", "background_color": "#0f1a2e", "theme_color": "#1c2c4c", "icons": [{"src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"}, {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}]}
+{
+ "id": "/",
+ "name": "Spoken Mandarin for Real Life",
+ "short_name": "Mandarin",
+ "description": "Spoken Mandarin lessons with video, dialogue and words.",
+ "lang": "en",
+ "dir": "ltr",
+ "start_url": "/?source=pwa",
+ "scope": "/",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#0f1a2e",
+ "theme_color": "#1c2c4c",
+ "icons": [
+  {
+   "src": "/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "maskable"
+  },
+  {
+   "src": "/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
