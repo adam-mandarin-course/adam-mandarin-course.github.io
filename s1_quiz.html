@@ -1,0 +1,27 @@
+<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Lesson 1 Quiz</title>
+<style>body{margin:0;background:#0f1428;color:#fff;font:18px system-ui,sans-serif;padding:14px;max-width:640px;margin:auto}
+h1{font-size:22px;color:#ffd166}.card{background:#1a2142;border-radius:16px;padding:14px;margin:10px 0}
+button{font:inherit;color:#fff;background:#2a3566;border:2px solid transparent;border-radius:14px;padding:14px;margin:6px 0;width:100%;text-align:left}
+.pl{background:#ffd166;color:#0f1428;font-weight:700;text-align:center}.g{background:#1f6f4a!important}.r{background:#8a2b3a!important}
+.pics{display:grid;grid-template-columns:1fr;gap:8px}.pics button{padding:4px}img{width:100%;border-radius:10px;display:block}
+.b{display:flex;gap:10px;align-items:center}.b span{flex:1}</style>
+<h1>Lesson 1 Quiz</h1><div id=app></div>
+<script>const Q=[{"t": "pic", "audio": "s1_l2.mp3", "opts": ["s1_p2.webp", "s1_p6.webp", "s1_p0.webp"], "ans": 0, "q": "Listen. Which picture matches?"}, {"t": "pic", "audio": "s1_l5.mp3", "opts": ["s1_p5.webp", "s1_p1.webp", "s1_p3.webp"], "ans": 0, "q": "Listen. Which picture matches?"}, {"t": "pic", "audio": "s1_l12.mp3", "opts": ["s1_p9.webp", "s1_p4.webp", "s1_p12.webp"], "ans": 2, "q": "Listen. Which picture matches?"}, {"t": "pic", "audio": "s1_l6.mp3", "opts": ["s1_p6.webp", "s1_p2.webp", "s1_p13.webp"], "ans": 0, "q": "Listen. Which picture matches?"}, {"t": "mean", "audio": "s1_l3.mp3", "opts": ["I'm tired. Did you cook?", "I'm busy. Where are you going?", "I'm okay. Have you eaten?"], "ans": 2, "q": "Listen. What does it mean?"}, {"t": "mean", "audio": "s1_l10.mp3", "opts": ["Are you tired today?", "Are you busy tomorrow?", "Is the movie good?"], "ans": 1, "q": "Listen. What does it mean?"}, {"t": "mean", "audio": "s1_l13.mp3", "opts": ["Sure! What shall we eat?", "No, I am busy.", "Sure! What time shall we go?"], "ans": 2, "q": "Listen. What does it mean?"}, {"t": "mean", "audio": "s1_l14.mp3", "opts": ["Tomorrow evening.", "Seven in the evening.", "Seven in the morning."], "ans": 1, "q": "Listen. What does it mean?"}, {"t": "say", "en": "tired", "opts": ["s1_waf467b.mp3", "s1_wa78e4f.mp3", "s1_w1c0a08.mp3"], "labels": ["lèi", "hǎochī", "máng"], "ans": 0, "q": "How would you say: tired  (say it out loud, then tap the right sound)"}, {"t": "say", "en": "tomorrow", "opts": ["s1_w8bcbd7.mp3", "s1_w800dfd.mp3", "s1_wa80cc5.mp3"], "labels": ["míngtiān", "jīntiān", "wǎnshang"], "ans": 0, "q": "How would you say: tomorrow  (say it out loud, then tap the right sound)"}, {"t": "say", "en": "noodles", "opts": ["s1_wedfec0.mp3", "s1_w814b1c.mp3", "s1_w51e974.mp3"], "labels": ["mǐfàn", "miàntiáo", "diànyǐng"], "ans": 1, "q": "How would you say: noodles  (say it out loud, then tap the right sound)"}];let i=0,score=0,au=new Audio();
+function play(f){au.src=f;au.play()}
+function show(){const q=Q[i],a=document.getElementById('app');
+if(!q){a.innerHTML='<div class=card><h2>Done! Score: '+score+' / '+Q.length+'</h2><button class=pl onclick="i=0;score=0;show()">Try again</button></div>';return}
+let h='<div class=card><div>Question '+(i+1)+' of '+Q.length+'</div><p>'+q.q+'</p>';
+if(q.t!='say')h+='<button class=pl onclick="play(\''+q.audio+'\')">&#9654; Play sound</button>';
+h+='<div class="'+(q.t=='pic'?'pics':'')+'">';
+q.opts.forEach((o,k)=>{if(q.t=='pic')h+='<button onclick="pick('+k+')"><img src="'+o+'"></button>';
+else if(q.t=='mean')h+='<button onclick="pick('+k+')">'+o+'</button>';
+else h+='<div class=b><button class=pl style="width:90px" onclick="play(\''+o+'\')">&#9654;</button><button onclick="pick('+k+')"><span>Option '+'ABC'[k]+'</span></button></div>'});
+a.innerHTML=h+'</div><div id=fb></div></div>';
+if(q.t!='say')play(q.audio)}
+function pick(k){const q=Q[i],bs=[...document.querySelectorAll('.card button:not(.pl)')];
+bs[k].classList.add(k==q.ans?'g':'r');bs[q.ans].classList.add('g');
+if(k==q.ans)score++;
+let fb='<p>'+(k==q.ans?'Correct!':'Not quite.')+'</p>';if(q.labels)fb+='<p>'+q.labels[q.ans]+'</p>';
+fb+='<button class=pl onclick="i++;show()">Next</button>';
+document.getElementById('fb').innerHTML=fb;bs.forEach(b=>b.disabled=true)}
+show()</script>
