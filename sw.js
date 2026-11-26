@@ -19,7 +19,7 @@ self.addEventListener("fetch",e=>{
    if(hit)return ranged(req,hit);
    try{return await fetch(req)}catch(x){return new Response("Offline. Press Download for offline on the menu while online.",{status:503})}
   }
-  const net=fetch(req).then(r=>{if(r&&r.ok&&r.status===200)c.put(k,r.clone());return r}).catch(()=>null);
+  const net=fetch(u.href,{cache:"no-cache"}).then(r=>{if(r&&r.ok&&r.status===200)c.put(k,r.clone());return r}).catch(()=>null);
   if(hit){e.waitUntil(net);return hit}
   const r=await net;return r||new Response("Offline. Open this page once online first.",{status:503});
  })());
