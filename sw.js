@@ -1,7 +1,8 @@
-const C="mandarin-v1";
-const PAGES=["/", "/lesson1.html", "/lesson2.html", "/lesson3.html", "/lesson4.html", "/lesson5.html", "/lesson6.html", "/lesson7.html", "/lesson8.html"];
-self.addEventListener("install",e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(PAGES.concat(["/manifest.json","/lessons.json","/icon-192.png","/icon-512.png"]))).then(()=>self.skipWaiting()))});
-self.addEventListener("activate",e=>e.waitUntil(self.clients.claim()));
+const C="mandarin-v1",P="pages-v2";
+self.addEventListener("install",e=>{e.waitUntil((async()=>{const c=await caches.open(P);for(const u of ["/","/manifest.json","/lessons.json","/icon-192.png","/icon-512.png"]){try{const r=await fetch(u,{cache:"no-cache"});if(r.ok)await c.put(u,r)}catch(x){}}self.skipWaiting()})())});
+self.addEventListener("activate",e=>e.waitUntil((async()=>{for(const k of await caches.keys())if(k!==C&&k!==P)await caches.delete(k);
+ try{const c=await caches.open(C);for(const r of await c.keys()){if(/\.(html)$/.test(r.url)||new URL(r.url).pathname==="/"||/lessons\.json|manifest\.json/.test(r.url))await c.delete(r)}}catch(x){}
+ await self.clients.claim()})()));
 async function ranged(req,res,ct){
  const r=req.headers.get("range");if(!r||!res)return res;
  const m=/bytes=(\d*)-(\d*)/.exec(r);const b=await res.blob();const n=b.size;
@@ -13,18 +14,17 @@ self.addEventListener("fetch",e=>{
  const req=e.request;if(req.method!=="GET")return;
  const u=new URL(req.url);if(u.origin!==location.origin)return;
  e.respondWith((async()=>{
-  const c=await caches.open(C);const k=key(u);
-  const hit=await c.match(k)||await c.match(u.pathname);
-  if(u.pathname.endsWith(".mp4")){
-   if(hit)return ranged(req,hit,"video/mp4");
-   try{return await fetch(req)}catch(x){return new Response("Offline. Press Download for offline on the menu while online.",{status:503})}
+  const p=u.pathname;
+  if(/\.(mp4|mp3|webp)$/.test(p)){
+   const c=await caches.open(C);const hit=await c.match(p);
+   const ct=p.endsWith("mp4")?"video/mp4":(p.endsWith("mp3")?"audio/mpeg":"image/webp");
+   if(hit)return req.headers.get("range")?ranged(req,hit,ct):hit;
+   try{return await fetch(req)}catch(x){return new Response("Offline. Tap Update on the menu while online to save this.",{status:503})}
   }
-  if(/\.(mp3|webp)$/.test(u.pathname)){
-   if(hit)return req.headers.get("range")?ranged(req,hit,u.pathname.endsWith("mp3")?"audio/mpeg":"image/webp"):hit;
-   try{const r=await fetch(req);return r}catch(x){return new Response("Offline",{status:503})}
-  }
-  const net=Promise.race([fetch(u.href,{cache:"no-cache"}),new Promise((_,j)=>setTimeout(()=>j(0),hit?20000:3500))]).then(r=>{if(r&&r.ok&&r.status===200)c.put(k,r.clone());return r}).catch(()=>null);
-  if(hit){e.waitUntil(net);return hit}
-  const r=await net;if(r)return r;const f=await c.match("/");return f||new Response("Offline. Open this page once online first.",{status:503,headers:{"Content-Type":"text/plain"}});
+  const c=await caches.open(P);const k=key(u);const hit=await c.match(k);
+  const net=Promise.race([fetch(u.href,{cache:"no-cache"}),new Promise((_,j)=>setTimeout(()=>j(0),hit?5000:9000))]).then(r=>{if(r&&r.ok&&r.status===200)c.put(k,r.clone());return r}).catch(()=>null);
+  const r=await net;if(r&&r.ok)return r;
+  if(hit)return hit;
+  const f=await c.match("/");return f||new Response("Offline. Open the app once online first.",{status:503,headers:{"Content-Type":"text/plain"}});
  })());
 });
